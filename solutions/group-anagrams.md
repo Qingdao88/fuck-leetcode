@@ -62,7 +62,100 @@ class Solution {
 
 空间复杂度：$O(n \times k)$
 
+#### 方法二
+
+计数法：将字符串中每个字母的出现次数作为哈希表的键。例如，字符串 "aab" 的键是 "a2b1"。
+
+```java
+class Solution {  
+    public List<List<String>> groupAnagrams(String[] strs) {  
+        HashMap<String, List<String>> hashMap = new HashMap<>();  
+        for (String str : strs) {  
+            int[] counts = new int[26];  
+            for (char c : str.toCharArray()) {  
+                counts[c - 'a']++;  
+            }  
+            StringBuilder sb = new StringBuilder();  
+            for (int i = 0; i < 26; i++) {  
+                if (counts[i] > 0) {  
+                    sb.append((char) (i + 'a'));  
+                    sb.append(counts[i]);  
+                }  
+            }  
+            String key = sb.toString();  
+            List<String> list;  
+            if (hashMap.containsKey(key)) {  
+                list = hashMap.get(key);  
+            } else {  
+                list = new ArrayList<>();  
+            }  
+            list.add(str);  
+            hashMap.put(key, list);  
+        }  
+        return new ArrayList<>(hashMap.values());  
+    }  
+}
+```
+
+可以把这几行：
+
+```java
+List<String> list;  
+if (hashMap.containsKey(key)) {  
+    list = hashMap.get(key);  
+} else {  
+    list = new ArrayList<>();  
+}  
+list.add(str);  
+hashMap.put(key, list);
+```
+
+优化为这一行：
+
+```java
+hashMap.computeIfAbsent(key, k -> new ArrayList<>()).add(str);
+```
+
+`computeIfAbsent` 方法会检查 `key` 是否已经存在于 `hashMap` 中。
+- 如果 `key` 存在，返回该 `key` 对应的值。
+- 如果 `key` 不存在，执行提供的 `mappingFunction`（即 `k -> new ArrayList<>()`），并将返回值（新的 `ArrayList`）存入 `hashMap` 中，然后返回新创建的 `ArrayList`。
+
+最终代码：
+
+```java
+class Solution {  
+    public List<List<String>> groupAnagrams(String[] strs) {  
+        HashMap<String, List<String>> hashMap = new HashMap<>();  
+        for (String str : strs) {  
+            int[] counts = new int[26];  
+            for (char c : str.toCharArray()) {  
+                counts[c - 'a']++;  
+            }  
+            StringBuilder sb = new StringBuilder();  
+            for (int i = 0; i < 26; i++) {  
+                if (counts[i] > 0) {  
+                    sb.append((char) (i + 'a'));  
+                    sb.append(counts[i]);  
+                }  
+            }  
+            String key = sb.toString();  
+            hashMap.computeIfAbsent(key, k -> new ArrayList<>()).add(str);  
+        }  
+        return new ArrayList<>(hashMap.values());  
+    }  
+}
+```
+
+**算法复杂度分析：**
+
+假设：`n` 是字符串的数量，`m` 是字符串的平均长度。
+
+时间复杂度：$O(n \times m)$
+
+空间复杂度：$O(n \times m)$
+
 ### 刷题反思
 
-1. 对 Java 容器 API 的掌握还不够熟练
-2. 对算法复杂度分析的理解还不够透彻
+1. 对 Java 容器 API 的掌握还不够熟练。
+2. 对算法复杂度分析的理解还不够透彻。
+3. 需要加强对 Java 内置 API 的学习。
