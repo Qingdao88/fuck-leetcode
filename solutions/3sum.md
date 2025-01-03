@@ -55,6 +55,8 @@ class Solution {
 
 #### 方法二
 
+此方法阶借鉴自 Krahets 的[题解](https://leetcode.cn/problems/3sum/solutions/11525/3sumpai-xu-shuang-zhi-zhen-yi-dong-by-jyd)。
+
 首先将数组按从小到大的顺序排序，然后使用三个指针 `i`、`j` 和 `k`。`i` 固定在数组的左端，`j` 从 `i + 1` 开始向右扫描，`k` 从数组的末尾向左扫描。如果三元组的和大于 0，则将 `k` 左移，并跳过所有重复元素；如果三元组的和小于 0，则将 `j` 右移，并跳过所有重复元素。当 `j` 大于或等于 `k` 时，当前扫描结束，`i` 右移，并跳过所有重复的元素。
 
 ```java
