@@ -45,3 +45,33 @@ class Solution {
 时间复杂度：$O(n)$
 
 空间复杂度：$O(1)$
+
+#### 方法二
+
+使用 $\log_{10}(x)$ 可以快速确定数字 `x` 是几位数。然后通过数学运算提取其最高位和最低位进行比较，比较后将数字除以 10，重复此过程，直到数字变为 0。
+
+```java
+class Solution {
+    public boolean isPalindrome(int x) {
+        if (x < 0) {
+            return false;
+        }
+        int digitCount = (int) Math.log10(x) + 1;
+        int divisor = (int) Math.pow(10, digitCount - 1);
+        while (x != 0) {
+            if (x % 10 != x / divisor) {
+                return false;
+            }
+            x = (x % divisor) / 10;
+            divisor /= 100;
+        }
+        return true;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(1)$
