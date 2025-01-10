@@ -36,6 +36,16 @@ class Solution {
 }
 ```
 
+给键的值 +1 的代码可以被优化为：
+
+```java
+prefixSum.merge(sum, 1, Integer::sum);
+```
+
+`merge` 方法的作用：
+- 如果 `prefixSum` 中不存在 `sum`，则插入新键值对 `sum -> 1`。
+- 如果 `prefixSum` 中已存在 `sum`，则调用合并函数：取出 `prefixSum` 中键 `sum` 对应的旧值 `oldValue`。调用 `Integer::sum` 方法，计算 `oldValue + 1`，返回结果作为新值存储到 `prefixSum` 的键 `sum` 中，替换旧值。
+
 **算法复杂度分析：**
 
 时间复杂度：$O(n)$
