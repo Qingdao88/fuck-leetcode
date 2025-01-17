@@ -17,6 +17,8 @@ tags:
 
 采用哈希表与双向链表结合的方式实现了 LRU（最近最少使用）缓存策略。利用哈希表可以在 O(1) 时间内定位缓存中的节点，而双向链表则用来维护节点的访问顺序：每次通过 `get` 或 `put` 操作访问到某个节点时，都会将这个节点移动到链表的头部，表明它是最近被使用的；当缓存达到最大容量时，链表尾部的节点（也就是最长时间未被访问的节点）会被移除，从而为新的数据腾出空间。
 
+我自己写的屎山代码：
+
 ```java
 class LRUCache {
 
@@ -110,6 +112,84 @@ class LRUCache {
                 tail = node;
             }
             map.put(key, node);
+        }
+    }
+
+}
+```
+
+用哨兵节点可以简化很多判 `null` 的逻辑，参考自灵茶山艾府的[题解](https://leetcode.cn/problems/lru-cache/solutions/2456294/tu-jie-yi-zhang-tu-miao-dong-lrupythonja-czgt)。
+
+```java
+class LRUCache {
+
+    private class Node {
+        int key;
+        int val;
+        Node prev;
+        Node next;
+
+        Node(int key, int val) {
+            this.key = key;
+            this.val = val;
+        }
+    }
+
+    private final int capacity;
+    private final Node dummy;
+    private final Map<Integer, Node> keyToNodeMap;
+
+    public LRUCache(int capacity) {
+        this.capacity = capacity;
+        dummy = new Node(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        dummy.next = dummy;
+        dummy.prev = dummy;
+        keyToNodeMap = new HashMap<>();
+    }
+
+    public int get(int key) {
+        if (!keyToNodeMap.containsKey(key)) {
+            return -1;
+        }
+        Node node = keyToNodeMap.get(key);
+        moveNodeToHead(node);
+        return node.val;
+    }
+
+    private void moveNodeToHead(Node node) {
+        removeNode(node);
+        addNodeToHead(node);
+    }
+
+    private void removeNode(Node node) {
+        Node prevNode = node.prev;
+        Node nextNode = node.next;
+        prevNode.next = nextNode;
+        nextNode.prev = prevNode;
+    }
+
+    private void addNodeToHead(Node newNode) {
+        Node oldHeadNode = dummy.next;
+        newNode.prev = dummy;
+        newNode.next = oldHeadNode;
+        dummy.next = newNode;
+        oldHeadNode.prev = newNode;
+    }
+
+    public void put(int key, int value) {
+        if (keyToNodeMap.containsKey(key)) {
+            Node node = keyToNodeMap.get(key);
+            node.val = value;
+            moveNodeToHead(node);
+        } else {
+            Node newNode = new Node(key, value);
+            keyToNodeMap.put(key, newNode);
+            addNodeToHead(newNode);
+            if (keyToNodeMap.size() > capacity) {
+                Node nodeToBeRemoved = dummy.prev;
+                removeNode(nodeToBeRemoved);
+                keyToNodeMap.remove(nodeToBeRemoved.key);
+            }
         }
     }
 
