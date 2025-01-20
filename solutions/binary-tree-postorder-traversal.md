@@ -41,3 +41,41 @@ class Solution {
 时间复杂度：$O(n)$
 
 空间复杂度：$O(h)$
+
+#### 方法二
+
+用栈模拟递归。
+
+在遍历过程中采用 **先左后右的入栈顺序**：如果当前节点存在左子节点，则先将左子节点压入栈；若存在右子节点，再将右子节点压入栈。由于栈的后进先出（LIFO）特性，右子节点会先出栈并被处理，从而保证右子树优先于左子树进行遍历。最终，由于整个遍历顺序为“根-右-左”，通过反转结果列表 `ans`，可以将其调整为符合后序遍历要求的“左-右-根”顺序。
+
+```java
+class Solution {
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            ans.add(node.val);
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+        }
+        Collections.reverse(ans);
+        return ans;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(h)$
+
