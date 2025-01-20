@@ -44,4 +44,40 @@ class Solution {
 
 时间复杂度：$O(n)$
 
-空间复杂度：$O(n)$
+空间复杂度：$O(h)$
+
+#### 方法二
+
+用栈模拟递归。
+
+1. **向左遍历：** 如果当前节点不为空，将节点压入栈并持续移动到左子节点。
+2. **弹出栈顶：** 若当前节点为空，说明左子树已遍历完，从栈中弹出节点（访问它的值）并转向右子树。
+3. **重复过程：** 通过循环反复执行上述步骤，直至栈为空且当前节点为空。
+
+```java
+class Solution {
+    public List<Integer> inorderTraversal(TreeNode root) {
+        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> ans = new ArrayList<>();
+        TreeNode currNode = root;
+        while (!stack.isEmpty() || currNode != null) {
+            if (currNode != null) {
+                stack.push(currNode);
+                currNode = currNode.left;
+            } else {
+                TreeNode parentNode = stack.pop();
+                currNode = parentNode.right;
+                ans.add(parentNode.val);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(h)$，其中 `h` 是树的高度，最坏为 `O(n)`，退化为链表的树，最好为完全平衡的二叉树，高度 `h = log(n)`。
+
