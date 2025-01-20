@@ -41,3 +41,39 @@ class Solution {
 时间复杂度：$O(n)$
 
 空间复杂度：$O(h)$
+
+#### 方法二
+
+用栈模拟递归。
+
+由于栈的先进后出性质，要把之后访问的元素先添加到栈里。注意 `null` 也算一个元素，会导致栈不为空，所以要先判空再入栈。
+
+```java
+class Solution {
+    public List<Integer> preorderTraversal(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        if (root == null) {
+            return ans;
+        }
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            ans.add(node.val);
+            if (node.right != null) {
+                stack.push(node.right);
+            }
+            if (node.left != null) {
+                stack.push(node.left);
+            }
+        }
+        return ans;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(h)$
