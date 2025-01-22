@@ -49,3 +49,29 @@ class Solution {
 时间复杂度：$O(n)$
 
 空间复杂度：$O(n)$
+
+#### 方法二
+
+用递归。
+
+$二叉树的高度 = Max(左子树的高度, 右子树高度) + 1$。
+
+```java
+class Solution {
+    public int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        return Math.max(left, right) + 1;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(n)$
+
