@@ -39,3 +39,35 @@ class Solution {
 时间复杂度：$O(n)$
 
 空间复杂度：$O(h)$
+
+#### 方法二
+
+将左子树转化为链表后的尾节点与右子树转化为链表后的头节点连接，然后将当前节点的右指针指向左链表的头节点。最后返回组成链表的尾节点。有右返回右，有左返回左，都没有返回自己。
+
+```java
+class Solution {
+    public void flatten(TreeNode root) {
+        flatten2(root);
+    }
+
+    private TreeNode flatten2(TreeNode node) {
+        if (node == null) {
+            return null;
+        }
+        TreeNode leftTail = flatten2(node.left);
+        TreeNode rightTail = flatten2(node.right);
+        if (leftTail != null) {
+            leftTail.right = node.right;
+            node.right = node.left;
+            node.left = null;
+        }
+        return rightTail != null ? rightTail : leftTail != null ? leftTail : node;
+    }
+}
+```
+
+**算法复杂度分析：**
+
+时间复杂度：$O(n)$
+
+空间复杂度：$O(h)$
